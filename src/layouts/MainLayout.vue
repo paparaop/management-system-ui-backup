@@ -11,8 +11,10 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
+        <q-toolbar-title> School Management System </q-toolbar-title>
+        <q-btn @click="$router.replace('/signup')" icon-right="home">
+          Go Sign Up
+        </q-btn>
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
@@ -43,10 +45,10 @@ import EssentialLink, {
 
 const essentialLinks: EssentialLinkProps[] = [
   {
-    title: 'Docs',
+    title: 'Sign Up',
     caption: 'quasar.dev',
     icon: 'school',
-    link: 'https://quasar.dev',
+    link: 'https://www.iitms.co.in/school-erp/',
   },
 ];
 

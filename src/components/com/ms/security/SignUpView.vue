@@ -3,6 +3,22 @@
     <div class="q-pa-md" style="max-width: 400px">
       <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
         <q-input
+          filled
+          v-model="signUpRequest.firstName"
+          label="First Name *"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Please type First Name',
+          ]"
+        ></q-input>
+        <q-input
+          filled
+          v-model="signUpRequest.lastName"
+          label="Last Name *"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Please type Last Name']"
+        ></q-input>
+        <q-input
           type="email"
           filled
           v-model="signUpRequest.email"
@@ -22,31 +38,24 @@
 
         <div>
           <q-btn label="Submit" type="submit" color="primary"></q-btn>
-          <q-btn
-            label="Reset"
-            type="reset"
-            color="primary"
-            flat
-            class="q-ml-sm"
-          ></q-btn>
         </div>
       </q-form>
     </div>
   </div>
 </template>
 <script lang="ts">
+import router from 'src/router';
 import { defineComponent, onBeforeMount, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import apiClient from './utils/apiClient';
 import { SignUpRequest } from './utils/SignUpRequest';
 
 export default defineComponent({
   setup() {
+    const router = useRouter();
     const signUpRequest = ref<SignUpRequest>({ email: '', password: '' });
     const loginService = async (user: any): Promise<any> => {
-      return await apiClient.post('/auth/login', {
-        username: user.email,
-        password: user.password,
-      });
+      return await apiClient.post('/api/v1/auth/signup', signUpRequest.value);
     };
     function onSubmit() {
       loginService(signUpRequest.value).then((response) => {
@@ -54,17 +63,13 @@ export default defineComponent({
           window.localStorage.clear();
           window.localStorage.setItem('jwtToken', response.data.token);
         }
-        window.location.href = '/api/v1/resource';
+        router.push({ path: 'login' });
       });
-    }
-    function onReset() {
-      signUpRequest.value = { email: '', password: '' };
     }
 
     return {
       signUpRequest,
       onSubmit,
-      onReset,
     };
   },
 });
