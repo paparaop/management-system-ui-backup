@@ -24,7 +24,7 @@
           v-model="signUpRequest.email"
           label="Email *"
           lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Please type Email']"
+          :rules="[(val) => validateEmail(val) || 'Please type Email']"
         ></q-input>
 
         <q-input
@@ -66,9 +66,13 @@ export default defineComponent({
         router.push({ path: 'login' });
       });
     }
+    function validateEmail(email: string): boolean {
+      return /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(email);
+    }
 
     return {
       signUpRequest,
+      validateEmail,
       onSubmit,
     };
   },
