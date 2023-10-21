@@ -43,10 +43,7 @@ export default defineComponent({
   setup() {
     const signUpRequest = ref<SignUpRequest>({ email: '', password: '' });
     const loginService = async (user: any): Promise<any> => {
-      return await apiClient.post('/auth/login', {
-        username: user.email,
-        password: user.password,
-      });
+      return await apiClient.post('/api/v1/auth/token', signUpRequest.value);
     };
     function onSubmit() {
       loginService(signUpRequest.value).then((response) => {
