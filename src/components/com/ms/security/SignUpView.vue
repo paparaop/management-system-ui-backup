@@ -35,7 +35,16 @@
           lazy-rules
           :rules="[(val) => (val && val.length > 0) || 'Please type Password']"
         ></q-input>
-
+        <q-select
+          multiple
+          v-model="signUpRequest.roles"
+          :options="roles"
+          option-label="name"
+          option-value="id"
+          label="Roles *"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Please Select Roles']"
+        />
         <div>
           <q-btn label="Submit" type="submit" color="primary"></q-btn>
         </div>
@@ -48,21 +57,28 @@ import router from 'src/router';
 import { defineComponent, onBeforeMount, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import apiClient from './utils/apiClient';
+import { Role } from './utils/Role';
 import { SignUpRequest } from './utils/SignUpRequest';
 
 export default defineComponent({
   setup() {
     const router = useRouter();
     const signUpRequest = ref<SignUpRequest>({ email: '', password: '' });
+    const roles = ref<Role[]>();
+    onMounted(async () => {
+      apiClient.get('/public/user/roles').then((data) => {
+        roles.value = data.data;
+      });
+    });
     const loginService = async (user: any): Promise<any> => {
-      return await apiClient.post('/api/v1/auth/signup', signUpRequest.value);
+      return await apiClient.post('/public/user', signUpRequest.value);
     };
     function onSubmit() {
       loginService(signUpRequest.value).then((response) => {
-        if (response.data.token) {
+        /*if (response.data.token) {
           window.localStorage.clear();
           window.localStorage.setItem('jwtToken', response.data.token);
-        }
+        }*/
         router.push({ path: 'login' });
       });
     }
